@@ -3,6 +3,7 @@
 #include <QBoxLayout>
 #include <QPushButton>
 #include <QSocketNotifier>
+#include <QListWidget>
 #include <QApplication>
 
 BoxLayout::BoxLayout(Orientation orientation)
@@ -67,6 +68,41 @@ void Button::clicked_slot()
 {
     if (m_events)
         m_events->clicked(this);
+}
+
+ListBoxItem::ListBoxItem(const std::string &text)
+{
+    m_qtitem = new QListWidgetItem(QString::fromStdString(text));
+}
+
+ListBoxItem::~ListBoxItem()
+{
+    delete m_qtitem;
+}
+
+void ListBoxItem::set_text(const std::string &text)
+{
+    m_qtitem->setText(QString::fromStdString(text));
+}
+
+ListBox::ListBox()
+{
+    m_qtwidget = new QListWidget;
+}
+
+ListBox::~ListBox()
+{
+    delete m_qtwidget;
+}
+
+void ListBox::add_item(ListBoxItem *item)
+{
+    m_qtwidget->addItem(item->m_qtitem);
+}
+
+QWidget *ListBox::qt_widget()
+{
+    return m_qtwidget;
 }
 
 Window::Window(const std::string &title) :

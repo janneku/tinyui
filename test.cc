@@ -11,18 +11,23 @@ public:
         m_watch(0)
     {
         for (int i = 0; i < 5; ++i) {
+            ListBoxItem *item = new ListBoxItem("item " + format_number(i));
+            m_listbox.add_item(item);
+
             m_buttons[i].set_label("label " + format_number(i));
             m_buttons[i].set_events(this);
             m_mainbox.add_widget(&m_buttons[i]);
         }
         m_quitbutton.set_events(this);
         m_watch.set_events(this);
+        m_mainbox.add_widget(&m_listbox);
         m_mainbox.add_widget(&m_quitbutton);
         set_widget(&m_mainbox);
     }
 
 private:
     BoxLayout m_mainbox;
+    ListBox m_listbox;
     Button m_buttons[5];
     Button m_quitbutton;
     IoWatch m_watch;

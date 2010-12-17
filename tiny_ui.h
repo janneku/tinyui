@@ -15,6 +15,8 @@ class QPushButton;
 class QBoxLayout;
 class QWidget;
 class QSocketNotifier;
+class QListWidgetItem;
+class QListWidget;
 #else
 #define Q_OBJECT
 class QObject {};
@@ -102,6 +104,45 @@ private:
     QWidget *qt_widget();
 private slots:
     void clicked_slot();
+#endif
+};
+
+class ListBoxItem {
+    DISABLE_ASSIGN(ListBoxItem)
+    friend class ListBox;
+public:
+    ListBoxItem(const std::string &text);
+    ~ListBoxItem();
+
+    void set_text(const std::string &text);
+
+private:
+#ifdef TINYUI_GTK
+    std::string m_text;
+    GtkTreeRowReference *m_rowref;
+#endif
+#ifdef TINYUI_QT
+    QListWidgetItem *m_qtitem;
+#endif
+};
+
+class ListBox: public Widget {
+    DISABLE_ASSIGN(ListBox)
+public:
+    ListBox();
+    ~ListBox();
+
+    void add_item(ListBoxItem *item);
+
+private:
+#ifdef TINYUI_GTK
+    GtkWidget *m_gtkwidget;
+    GtkListStore *m_store;
+    GtkWidget *gtk_widget();
+#endif
+#ifdef TINYUI_QT
+    QListWidget *m_qtwidget;
+    QWidget *qt_widget();
 #endif
 };
 

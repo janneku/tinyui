@@ -64,6 +64,73 @@ void Button::clicked_cb(GtkWidget *widget, Button *button)
         button->m_events->clicked(button);
 }
 
+ListBoxItem::ListBoxItem(const std::string &text) :
+    m_text(text), m_rowref(NULL)
+{
+}
+
+ListBoxItem::~ListBoxItem()
+{
+    if (m_rowref == NULL)
+        return;
+
+    GtkTreeModel *model = gtk_tree_row_reference_get_model(m_rowref);
+    GtkTreePath *path = gtk_tree_row_reference_get_path(m_rowref);
+    GtkTreeIter iter;
+    gtk_tree_model_get_iter(model, &iter, path);
+    gtk_tree_path_free(path);
+
+    gtk_list_store_remove(GTK_LIST_STORE(model), &iter);
+    gtk_tree_row_reference_free(m_rowref);
+}
+
+void ListBoxItem::set_text(const std::string &text)
+{
+    m_text = text;
+    if (m_rowref == NULL)
+        return;
+
+    GtkTreeModel *model = gtk_tree_row_reference_get_model(m_rowref);
+    GtkTreePath *path = gtk_tree_row_reference_get_path(m_rowref);
+    GtkTreeIter iter;
+    gtk_tree_model_get_iter(model, &iter, path);
+    gtk_tree_path_free(path);
+
+    gtk_list_store_set(GTK_LIST_STORE(model), &iter, 0, text.c_str(), -1);
+}
+
+ListBox::ListBox()
+{
+    m_store = gtk_list_store_new(1, G_TYPE_STRING);
+    m_gtkwidget = gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_store));
+
+    GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(m_gtkwidget),
+        -1, "", renderer, "text", 0, NULL);
+}
+
+ListBox::~ListBox()
+{
+    gtk_widget_destroy(m_gtkwidget);
+}
+
+void ListBox::add_item(ListBoxItem *item)
+{
+    GtkTreeIter iter;
+    gtk_list_store_append(m_store, &iter);
+    gtk_list_store_set(m_store, &iter, 0, item->m_text.c_str(), -1);
+
+    GtkTreePath *path =
+        gtk_tree_model_get_path(GTK_TREE_MODEL(m_store), &iter);
+    item->m_rowref = gtk_tree_row_reference_new(GTK_TREE_MODEL(m_store), path);
+    gtk_tree_path_free(path);
+}
+
+GtkWidget *ListBox::gtk_widget()
+{
+    return m_gtkwidget;
+}
+
 Window::Window(const std::string &title)
 {
     m_gtkwidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
