@@ -39,7 +39,7 @@ QWidget *BoxLayout::qt_widget()
 }
 
 Button::Button(const std::string &label) :
-    m_events(NULL)
+    m_handler(NULL)
 {
     m_qtwidget = new QPushButton(QString::fromStdString(label));
     connect(m_qtwidget, SIGNAL(clicked()), SLOT(clicked_slot()));
@@ -62,8 +62,8 @@ QWidget *Button::qt_widget()
 
 void Button::clicked_slot()
 {
-    if (m_events)
-        m_events->clicked(this);
+    if (m_handler)
+        m_handler->clicked(this);
 }
 
 ListBoxItem::ListBoxItem(const std::string &text)
@@ -122,7 +122,7 @@ void Window::show()
 }
 
 IoWatch::IoWatch(int fd) :
-    m_events(NULL)
+    m_handler(NULL)
 {
     m_notifier = new QSocketNotifier(fd, QSocketNotifier::Read);
     connect(m_notifier, SIGNAL(activated(int)), SLOT(activated_slot()));
@@ -135,12 +135,12 @@ IoWatch::~IoWatch()
 
 void IoWatch::activated_slot()
 {
-    if (m_events)
-        m_events->ready(this);
+    if (m_handler)
+        m_handler->ready(this);
 }
 
 Timer::Timer(int interval) :
-    m_events(NULL)
+    m_handler(NULL)
 {
     m_id = startTimer(interval);
 }
@@ -153,8 +153,8 @@ void Timer::timerEvent(QTimerEvent *event)
 {
     if (event->timerId() != m_id)
         return;
-    if (m_events)
-        m_events->timeout(this);
+    if (m_handler)
+        m_handler->timeout(this);
 }
 
 Application::Application(int *argc, char ***argv)

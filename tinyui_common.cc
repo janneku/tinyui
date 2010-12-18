@@ -1,18 +1,18 @@
 #include "tiny_ui.h"
 
-void Button::set_events(ButtonEvents *events)
+void Button::set_handler(ClickInterface *events)
 {
-    m_events = events;
+    m_handler = events;
 }
 
-void IoWatch::set_events(IoWatchEvents *events)
+void IoWatch::set_handler(IoWatchInterface *events)
 {
-    m_events = events;
+    m_handler = events;
 }
 
-void Timer::set_events(TimerEvents *events)
+void Timer::set_handler(TimerInterface *events)
 {
-    m_events = events;
+    m_handler = events;
 }
 
 Application *Application::instance()

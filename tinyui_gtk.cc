@@ -32,7 +32,7 @@ GtkWidget *BoxLayout::gtk_widget()
 }
 
 Button::Button(const std::string &label) :
-    m_events(NULL)
+    m_handler(NULL)
 {
     m_gtkwidget = gtk_button_new_with_label(label.c_str());
     g_signal_connect(m_gtkwidget, "clicked", G_CALLBACK(clicked_cb), this);
@@ -56,8 +56,8 @@ GtkWidget *Button::gtk_widget()
 void Button::clicked_cb(GtkWidget *widget, Button *button)
 {
     UNUSED(widget);
-    if (button->m_events)
-        button->m_events->clicked(button);
+    if (button->m_handler)
+        button->m_handler->clicked(button);
 }
 
 ListBoxItem::ListBoxItem(const std::string &text) :
@@ -155,7 +155,7 @@ void Window::show()
 }
 
 IoWatch::IoWatch(int fd) :
-    m_events(NULL)
+    m_handler(NULL)
 {
     m_iochannel = g_io_channel_unix_new(fd);
     m_id = g_io_add_watch(m_iochannel, G_IO_IN, GIOFunc(io_watch_cb), this);
@@ -172,13 +172,13 @@ bool IoWatch::io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
 {
     UNUSED(cond);
     UNUSED(iochannel);
-    if (iowatch->m_events)
-        iowatch->m_events->ready(iowatch);
+    if (iowatch->m_handler)
+        iowatch->m_handler->ready(iowatch);
     return true;
 }
 
 Timer::Timer(int interval) :
-    m_events(NULL)
+    m_handler(NULL)
 {
     m_id = g_timeout_add(interval, GSourceFunc(timer_cb), this);
 }
@@ -190,8 +190,8 @@ Timer::~Timer()
 
 bool Timer::timer_cb(Timer *timer)
 {
-    if (timer->m_events)
-        timer->m_events->timeout(timer);
+    if (timer->m_handler)
+        timer->m_handler->timeout(timer);
     return true;
 }
 

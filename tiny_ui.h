@@ -72,7 +72,7 @@ public:
 
 class Button;
 
-class ButtonEvents {
+class ClickInterface {
 public:
     virtual void clicked(Button *button) = 0;
 };
@@ -106,10 +106,10 @@ public:
     ~Button();
 
     void set_label(const std::string &label);
-    void set_events(ButtonEvents *events);
+    void set_handler(ClickInterface *events);
 
 private:
-    ButtonEvents *m_events;
+    ClickInterface *m_handler;
 
 #ifdef TINYUI_GTK
     GtkWidget *m_gtkwidget;
@@ -183,7 +183,7 @@ private:
 
 class IoWatch;
 
-class IoWatchEvents {
+class IoWatchInterface {
 public:
     virtual void ready(IoWatch *iowatch) = 0;
 };
@@ -196,10 +196,10 @@ public:
     explicit IoWatch(int fd);
     ~IoWatch();
 
-    void set_events(IoWatchEvents *events);
+    void set_handler(IoWatchInterface *events);
 
 private:
-    IoWatchEvents *m_events;
+    IoWatchInterface *m_handler;
 
 #ifdef TINYUI_GTK
     GIOChannel *m_iochannel;
@@ -216,7 +216,7 @@ private slots:
 
 class Timer;
 
-class TimerEvents {
+class TimerInterface {
 public:
     virtual void timeout(Timer *timer) = 0;
 };
@@ -226,10 +226,10 @@ public:
     explicit Timer(int interval);
     ~Timer();
 
-    void set_events(TimerEvents *events);
+    void set_handler(TimerInterface *events);
 
 private:
-    TimerEvents *m_events;
+    TimerInterface *m_handler;
 
 #ifdef TINYUI_GTK
     guint m_id;
