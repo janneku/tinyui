@@ -47,10 +47,6 @@ void Button::set_label(const std::string &label)
 {
     gtk_button_set_label(GTK_BUTTON(m_gtkwidget), label.c_str());
 }
-void Button::set_events(ButtonEvents *events)
-{
-    m_events = events;
-}
 
 GtkWidget *Button::gtk_widget()
 {
@@ -171,11 +167,6 @@ IoWatch::~IoWatch()
     g_io_channel_unref(m_iochannel);
 }
 
-void IoWatch::set_events(IoWatchEvents *events)
-{
-    m_events = events;
-}
-
 bool IoWatch::io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
                           IoWatch *iowatch)
 {
@@ -195,11 +186,6 @@ Timer::Timer(int interval) :
 Timer::~Timer()
 {
     g_source_remove(m_id);
-}
-
-void Timer::set_events(TimerEvents *events)
-{
-    m_events = events;
 }
 
 bool Timer::timer_cb(Timer *timer)
@@ -227,11 +213,3 @@ int Application::run()
     gtk_main();
     return 0;
 }
-
-Application *Application::instance()
-{
-    return m_instance;
-}
-
-Application *Application::m_instance;
-

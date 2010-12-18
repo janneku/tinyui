@@ -1,6 +1,6 @@
 LDFLAGS = `pkg-config gtk+-2.0 --libs`
 CXXFLAGS = -g `pkg-config gtk+-2.0 --cflags` -DTINYUI_GTK -W -Wall -O2
-OBJS = test.o tinyui_gtk.o
+OBJS = test.o tinyui_gtk.o tinyui_common.o
 
 all: test
 

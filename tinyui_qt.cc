@@ -25,7 +25,6 @@ BoxLayout::BoxLayout(Orientation orientation)
 
 BoxLayout::~BoxLayout()
 {
-    delete m_qtlayout;
     delete m_qtwidget;
 }
 
@@ -54,10 +53,6 @@ Button::~Button()
 void Button::set_label(const std::string &label)
 {
     m_qtwidget->setText(QString::fromStdString(label));
-}
-void Button::set_events(ButtonEvents *events)
-{
-    m_events = events;
 }
 
 QWidget *Button::qt_widget()
@@ -138,11 +133,6 @@ IoWatch::~IoWatch()
     delete m_notifier;
 }
 
-void IoWatch::set_events(IoWatchEvents *events)
-{
-    m_events = events;
-}
-
 void IoWatch::activated_slot()
 {
     if (m_events)
@@ -157,11 +147,6 @@ Timer::Timer(int interval) :
 
 Timer::~Timer()
 {
-}
-
-void Timer::set_events(TimerEvents *events)
-{
-    m_events = events;
 }
 
 void Timer::timerEvent(QTimerEvent *event)
@@ -189,11 +174,3 @@ int Application::run()
 {
     return qApp->exec();
 }
-
-Application *Application::instance()
-{
-    return m_instance;
-}
-
-Application *Application::m_instance;
-
