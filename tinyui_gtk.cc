@@ -157,11 +157,12 @@ IoWatch::IoWatch(int fd) :
     m_events(NULL)
 {
     m_iochannel = g_io_channel_unix_new(fd);
-    g_io_add_watch(m_iochannel, G_IO_IN, GIOFunc(io_watch_cb), this);
+    m_id = g_io_add_watch(m_iochannel, G_IO_IN, GIOFunc(io_watch_cb), this);
 }
 
 IoWatch::~IoWatch()
 {
+    g_source_remove(m_id);
     g_io_channel_unref(m_iochannel);
 }
 
@@ -177,6 +178,29 @@ bool IoWatch::io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
     UNUSED(iochannel);
     if (iowatch->m_events)
         iowatch->m_events->ready(iowatch);
+    return true;
+}
+
+Timer::Timer(int interval) :
+    m_events(NULL)
+{
+    m_id = g_timeout_add(interval, GSourceFunc(timer_cb), this);
+}
+
+Timer::~Timer()
+{
+    g_source_remove(m_id);
+}
+
+void Timer::set_events(TimerEvents *events)
+{
+    m_events = events;
+}
+
+bool Timer::timer_cb(Timer *timer)
+{
+    if (timer->m_events)
+        timer->m_events->timeout(timer);
     return true;
 }
 

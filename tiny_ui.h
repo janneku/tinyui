@@ -186,6 +186,7 @@ private:
 
 #ifdef TINYUI_GTK
     GIOChannel *m_iochannel;
+    int m_id;
     static bool io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
                             IoWatch *iowatch);
 #endif
@@ -193,6 +194,33 @@ private:
     QSocketNotifier *m_notifier;
 private slots:
     void activated_slot();
+#endif
+};
+
+class Timer;
+
+class TimerEvents {
+public:
+    virtual void timeout(Timer *timer) = 0;
+};
+
+class Timer: public QObject {
+public:
+    explicit Timer(int interval);
+    ~Timer();
+
+    void set_events(TimerEvents *events);
+
+private:
+    TimerEvents *m_events;
+
+#ifdef TINYUI_GTK
+    guint m_id;
+    static bool timer_cb(Timer *timer);
+#endif
+#ifdef TINYUI_QT
+    int m_id;
+    void timerEvent(QTimerEvent *event);
 #endif
 };
 

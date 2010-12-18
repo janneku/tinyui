@@ -1,14 +1,16 @@
 #include "tiny_ui.h"
 #include <stdio.h>
 
-class MyWindow: public Window, public ButtonEvents, public IoWatchEvents
+class MyWindow: public Window, public ButtonEvents, public IoWatchEvents,
+                public TimerEvents
 {
 public:
     MyWindow() :
         Window("Hello world"),
         m_mainbox(VERTICAL),
         m_quitbutton("Quit"),
-        m_watch(0)
+        m_watch(0),
+        m_timer(1000)
     {
         for (int i = 0; i < 5; ++i) {
             ListBoxItem *item = new ListBoxItem("item " + format_number(i));
@@ -20,6 +22,7 @@ public:
         }
         m_quitbutton.set_events(this);
         m_watch.set_events(this);
+        m_timer.set_events(this);
         m_mainbox.add_widget(&m_listbox);
         m_mainbox.add_widget(&m_quitbutton);
         set_widget(&m_mainbox);
@@ -31,6 +34,7 @@ private:
     Button m_buttons[5];
     Button m_quitbutton;
     IoWatch m_watch;
+    Timer m_timer;
 
     void clicked(Button *button)
     {
@@ -48,6 +52,11 @@ private:
             len--;
         buf[len] = 0;
         printf("<%s>\n", buf);
+    }
+    void timeout(Timer *timer)
+    {
+        UNUSED(timer);
+        printf("tick!\n");
     }
 };
 

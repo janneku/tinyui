@@ -5,6 +5,7 @@
 #include <QSocketNotifier>
 #include <QListWidget>
 #include <QApplication>
+#include <QTimerEvent>
 
 BoxLayout::BoxLayout(Orientation orientation)
 {
@@ -146,6 +147,29 @@ void IoWatch::activated_slot()
 {
     if (m_events)
         m_events->ready(this);
+}
+
+Timer::Timer(int interval) :
+    m_events(NULL)
+{
+    m_id = startTimer(interval);
+}
+
+Timer::~Timer()
+{
+}
+
+void Timer::set_events(TimerEvents *events)
+{
+    m_events = events;
+}
+
+void Timer::timerEvent(QTimerEvent *event)
+{
+    if (event->timerId() != m_id)
+        return;
+    if (m_events)
+        m_events->timeout(this);
 }
 
 Application::Application(int *argc, char ***argv)
