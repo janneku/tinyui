@@ -102,11 +102,16 @@ void ListBoxItem::set_text(const std::string &text)
 ListBox::ListBox()
 {
     m_store = gtk_list_store_new(1, G_TYPE_STRING);
-    m_gtkwidget = gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_store));
+    GtkWidget *tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_store));
 
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(m_gtkwidget),
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tree_view),
         -1, "", renderer, "text", 0, NULL);
+
+    m_gtkwidget = gtk_scrolled_window_new(NULL, NULL);
+    gtk_container_add(GTK_CONTAINER(m_gtkwidget), tree_view);
+    gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_gtkwidget),
+            GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 }
 
 ListBox::~ListBox()
