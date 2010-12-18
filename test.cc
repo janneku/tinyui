@@ -63,6 +63,8 @@ private:
 int main(int argc, char **argv)
 {
     Application app(&argc, &argv);
+    SigIntHandler sighandler;
+    sighandler.set_handler(&app);
     MyWindow mw;
     mw.show();
     return app.run();

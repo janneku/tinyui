@@ -20,5 +20,5 @@ Application *Application::instance()
     return m_instance;
 }
 
-Application *Application::m_instance;
+Application *Application::m_instance = NULL;
 

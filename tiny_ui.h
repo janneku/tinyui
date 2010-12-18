@@ -241,7 +241,29 @@ private:
 #endif
 };
 
-class Application {
+class QuitInterface
+{
+public:
+    virtual void quit() = 0;
+};
+
+class SigIntHandler: private IoWatchInterface {
+public:
+    SigIntHandler();
+
+    void set_handler(QuitInterface *handler);
+
+private:
+    QuitInterface *m_handler;
+    int m_fd[2];
+
+    void ready(IoWatch *iowatch);
+
+    static SigIntHandler *m_instance;
+    static void signal_handler(int sig);
+};
+
+class Application: public QuitInterface {
 public:
     Application(int *argc, char ***argv);
 
