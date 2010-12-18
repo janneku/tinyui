@@ -6,6 +6,7 @@
 #endif
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 #ifdef TINYUI_QT
 #include <QObject>
@@ -28,11 +29,27 @@ class QObject {};
     private: \
         void operator =(const x &from);
 
+#undef foreach
+#define foreach(type, i, container) \
+    for (type::iterator i = (container).begin(); i != (container).end(); ++i)
+
+#define foreach_safe(type, i, container) \
+    for (type::iterator next = (container).begin(), i = next++; \
+         i != (container).end(); i = next++)
+
 template<class T>
 std::string format_number(T val)
 {
     std::ostringstream str;
     str << val;
+    return str.str();
+}
+
+template<class T>
+std::string format_hex(T val, size_t width)
+{
+    std::ostringstream str;
+    str << std::setw(width) << std::setfill('0') << std::hex << val;
     return str.str();
 }
 
