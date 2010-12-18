@@ -1,3 +1,6 @@
+/*
+ * Qt 4 implementation of tinyui GUI classes
+ */
 #include "tiny_ui.h"
 #include <stdexcept>
 #include <QBoxLayout>

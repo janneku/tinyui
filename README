@@ -1,1 +1,5 @@
 tinyui - UI library that makes sense.
+
+Supported GUI toolkits:
+ * gtk+ 2
+ * Qt 4
