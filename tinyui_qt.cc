@@ -72,6 +72,7 @@ void Button::clicked_slot()
 ListBoxItem::ListBoxItem(const std::string &text)
 {
     m_qtitem = new QListWidgetItem(QString::fromStdString(text));
+    m_qtitem->setData(Qt::UserRole, QVariant::fromValue<void *>(this));
 }
 
 ListBoxItem::~ListBoxItem()
@@ -84,9 +85,12 @@ void ListBoxItem::set_text(const std::string &text)
     m_qtitem->setText(QString::fromStdString(text));
 }
 
-ListBox::ListBox()
+ListBox::ListBox() :
+    m_handler(NULL)
 {
     m_qtwidget = new QListWidget;
+    connect(m_qtwidget, SIGNAL(itemActivated(QListWidgetItem *)),
+            SLOT(itemActivated_slot(QListWidgetItem *)));
 }
 
 ListBox::~ListBox()
@@ -107,6 +111,14 @@ void ListBox::scroll_to(ListBoxItem *item)
 QWidget *ListBox::qt_widget()
 {
     return m_qtwidget;
+}
+
+void ListBox::itemActivated_slot(QListWidgetItem *qtitem)
+{
+    ListBoxItem *item = reinterpret_cast<ListBoxItem *>(
+                        qtitem->data(Qt::UserRole).value<void *>());
+    if (m_handler)
+        m_handler->clicked(this, item);
 }
 
 Window::Window(const std::string &title) :

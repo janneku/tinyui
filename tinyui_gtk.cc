@@ -2,6 +2,7 @@
  * gtk+ 2 implementation of tinyui GUI classes
  */
 #include "tiny_ui.h"
+#include <string.h>
 #include <stdexcept>
 
 BoxLayout::BoxLayout(Orientation orientation)
@@ -98,10 +99,13 @@ void ListBoxItem::set_text(const std::string &text)
     gtk_list_store_set(GTK_LIST_STORE(model), &iter, 0, text.c_str(), -1);
 }
 
-ListBox::ListBox()
+ListBox::ListBox() :
+    m_handler(NULL)
 {
-    m_store = gtk_list_store_new(1, G_TYPE_STRING);
+    m_store = gtk_list_store_new(2, G_TYPE_STRING, G_TYPE_POINTER);
     m_treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_store));
+    g_signal_connect(m_treeview, "row-activated", G_CALLBACK(activated_cb), this);
+    gtk_tree_view_set_headers_visible(GTK_TREE_VIEW(m_treeview), false);
 
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(m_treeview),
@@ -122,7 +126,7 @@ void ListBox::add_item(ListBoxItem *item)
 {
     GtkTreeIter iter;
     gtk_list_store_append(m_store, &iter);
-    gtk_list_store_set(m_store, &iter, 0, item->m_text.c_str(), -1);
+    gtk_list_store_set(m_store, &iter, 0, item->m_text.c_str(), 1, item, -1);
 
     GtkTreePath *path =
         gtk_tree_model_get_path(GTK_TREE_MODEL(m_store), &iter);
@@ -136,6 +140,26 @@ void ListBox::scroll_to(ListBoxItem *item)
     gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(m_treeview), path, NULL,
                                  false, 0, 0);
     gtk_tree_path_free(path);
+}
+
+void ListBox::activated_cb(GtkTreeView *treeview, GtkTreePath *path,
+                           GtkTreeViewColumn *col, ListBox *listbox)
+{
+    UNUSED(treeview);
+    UNUSED(path);
+    UNUSED(col);
+    GtkTreeIter iter;
+    gtk_tree_model_get_iter(GTK_TREE_MODEL(listbox->m_store), &iter, path);
+
+    GValue val;
+    memset(&val, 0, sizeof val);
+    gtk_tree_model_get_value(GTK_TREE_MODEL(listbox->m_store), &iter, 1, &val);
+    ListBoxItem *item =
+        reinterpret_cast<ListBoxItem *>(g_value_get_pointer(&val));
+    g_value_unset(&val);
+
+    if (listbox->m_handler)
+        listbox->m_handler->clicked(listbox, item);
 }
 
 GtkWidget *ListBox::gtk_widget()

@@ -128,7 +128,7 @@ class ListBoxItem {
     DISABLE_ASSIGN(ListBoxItem)
     friend class ListBox;
 public:
-    ListBoxItem(const std::string &text);
+    ListBoxItem(const std::string &text = std::string());
     ~ListBoxItem();
 
     void set_text(const std::string &text);
@@ -143,24 +143,41 @@ private:
 #endif
 };
 
-class ListBox: public Widget {
+class ListBox;
+
+class ListBoxInterface {
+public:
+    virtual void clicked(ListBox *listbox, ListBoxItem *item) = 0;
+};
+
+class ListBox: public QObject, public Widget {
     DISABLE_ASSIGN(ListBox)
+    Q_OBJECT
+
 public:
     ListBox();
     ~ListBox();
+
+    void set_handler(ListBoxInterface *handler);
 
     void add_item(ListBoxItem *item);
     void scroll_to(ListBoxItem *item);
 
 private:
+    ListBoxInterface *m_handler;
+
 #ifdef TINYUI_GTK
     GtkWidget *m_gtkwidget, *m_treeview;
     GtkListStore *m_store;
     GtkWidget *gtk_widget();
+    static void activated_cb(GtkTreeView *treeview, GtkTreePath *path,
+                             GtkTreeViewColumn *col, ListBox *listbox);
 #endif
 #ifdef TINYUI_QT
     QListWidget *m_qtwidget;
     QWidget *qt_widget();
+private slots:
+    void itemActivated_slot(QListWidgetItem *qtitem);
 #endif
 };
 
