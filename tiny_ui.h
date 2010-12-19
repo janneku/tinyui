@@ -92,6 +92,7 @@ public:
 private:
 #ifdef TINYUI_GTK
     Orientation m_orientation;
+    bool m_expandable[2];
     GtkWidget *m_gtkwidget;
     bool expandable(Orientation orientation);
     GtkWidget *gtk_widget();

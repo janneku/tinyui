@@ -21,6 +21,8 @@ void Widget::hide()
 BoxLayout::BoxLayout(Orientation orientation) :
     m_orientation(orientation)
 {
+    m_expandable[HORIZONTAL] = false;
+    m_expandable[VERTICAL] = false;
     switch (orientation) {
     case HORIZONTAL:
         m_gtkwidget = gtk_hbox_new(false, 3);
@@ -40,13 +42,17 @@ BoxLayout::~BoxLayout()
 
 void BoxLayout::add_widget(Widget *widget)
 {
+    if (widget->expandable(HORIZONTAL))
+        m_expandable[HORIZONTAL] = true;
+    if (widget->expandable(VERTICAL))
+        m_expandable[VERTICAL] = true;
     gtk_box_pack_start(GTK_BOX(m_gtkwidget), widget->gtk_widget(),
                        widget->expandable(m_orientation), true, 0);
 }
 
 bool BoxLayout::expandable(Orientation orientation)
 {
-    return true;
+    return m_expandable[orientation];
 }
 
 GtkWidget *BoxLayout::gtk_widget()
@@ -192,6 +198,7 @@ void ListBox::activated_cb(GtkTreeView *treeview, GtkTreePath *path,
 
 bool ListBox::expandable(Orientation orientation)
 {
+    UNUSED(orientation);
     return true;
 }
 
