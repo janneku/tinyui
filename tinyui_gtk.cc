@@ -4,6 +4,9 @@
 #include "tiny_ui.h"
 #include <string.h>
 #include <stdexcept>
+#ifdef TINYUI_HILDON
+#include <hildon/hildon.h>
+#endif
 
 void Widget::show()
 {
@@ -132,10 +135,14 @@ ListBox::ListBox() :
     gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(m_treeview),
         -1, "", renderer, "text", 0, NULL);
 
+#ifdef TINYUI_HILDON
+    m_gtkwidget = hildon_pannable_area_new();
+#else
     m_gtkwidget = gtk_scrolled_window_new(NULL, NULL);
-    gtk_container_add(GTK_CONTAINER(m_gtkwidget), m_treeview);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_gtkwidget),
             GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+#endif
+    gtk_container_add(GTK_CONTAINER(m_gtkwidget), m_treeview);
 }
 
 ListBox::~ListBox()
