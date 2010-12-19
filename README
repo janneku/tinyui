@@ -3,3 +3,8 @@ tinyui - UI library that makes sense.
 Supported GUI toolkits:
  * gtk+ 2
  * Qt 4
+
+Features:
+ * Standard C++ and STL
+ * No signal and slots or preprocessors
+ * Automatic widget layout (unlike gtk+)
