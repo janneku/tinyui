@@ -15,7 +15,8 @@ void Widget::hide()
     gtk_widget_hide(gtk_widget());
 }
 
-BoxLayout::BoxLayout(Orientation orientation)
+BoxLayout::BoxLayout(Orientation orientation) :
+    m_orientation(orientation)
 {
     switch (orientation) {
     case HORIZONTAL:
@@ -37,7 +38,12 @@ BoxLayout::~BoxLayout()
 void BoxLayout::add_widget(Widget *widget)
 {
     gtk_box_pack_start(GTK_BOX(m_gtkwidget), widget->gtk_widget(),
-                       true, true, 0);
+                       widget->expandable(m_orientation), true, 0);
+}
+
+bool BoxLayout::expandable(Orientation orientation)
+{
+    return true;
 }
 
 GtkWidget *BoxLayout::gtk_widget()
@@ -60,6 +66,11 @@ Button::~Button()
 void Button::set_label(const std::string &label)
 {
     gtk_button_set_label(GTK_BUTTON(m_gtkwidget), label.c_str());
+}
+
+bool Button::expandable(Orientation orientation)
+{
+    return orientation == HORIZONTAL;
 }
 
 GtkWidget *Button::gtk_widget()
@@ -170,6 +181,11 @@ void ListBox::activated_cb(GtkTreeView *treeview, GtkTreePath *path,
 
     if (listbox->m_handler)
         listbox->m_handler->clicked(listbox, item);
+}
+
+bool ListBox::expandable(Orientation orientation)
+{
+    return true;
 }
 
 GtkWidget *ListBox::gtk_widget()

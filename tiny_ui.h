@@ -66,6 +66,7 @@ public:
     void hide();
 
 #ifdef TINYUI_GTK
+    virtual bool expandable(Orientation orientation) = 0;
     virtual GtkWidget *gtk_widget() = 0;
 #endif
 #ifdef TINYUI_QT
@@ -90,7 +91,9 @@ public:
 
 private:
 #ifdef TINYUI_GTK
+    Orientation m_orientation;
     GtkWidget *m_gtkwidget;
+    bool expandable(Orientation orientation);
     GtkWidget *gtk_widget();
 #endif
 #ifdef TINYUI_QT
@@ -116,6 +119,7 @@ private:
 
 #ifdef TINYUI_GTK
     GtkWidget *m_gtkwidget;
+    bool expandable(Orientation orientation);
     GtkWidget *gtk_widget();
     static void clicked_cb(GtkWidget *widget, Button *button);
 #endif
@@ -172,6 +176,7 @@ private:
 #ifdef TINYUI_GTK
     GtkWidget *m_gtkwidget, *m_treeview;
     GtkListStore *m_store;
+    bool expandable(Orientation orientation);
     GtkWidget *gtk_widget();
     static void activated_cb(GtkTreeView *treeview, GtkTreePath *path,
                              GtkTreeViewColumn *col, ListBox *listbox);
