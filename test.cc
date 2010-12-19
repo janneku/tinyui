@@ -1,8 +1,8 @@
 #include "tiny_ui.h"
 #include <stdio.h>
 
-class MyWindow: public Window, public ClickInterface, public IoWatchInterface,
-                public TimerInterface, public ListBoxInterface
+class MyWindow: public Window, private ClickInterface, private IoWatchInterface,
+                private TimerInterface, private ListBoxInterface
 {
 public:
     MyWindow() :
