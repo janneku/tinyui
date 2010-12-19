@@ -154,7 +154,7 @@ public:
 
 private:
 #ifdef TINYUI_GTK
-    GtkWidget *m_gtkwidget;
+    GtkWidget *m_gtkwidget, *m_treeview;
     GtkListStore *m_store;
     GtkWidget *gtk_widget();
 #endif

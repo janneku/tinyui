@@ -101,14 +101,14 @@ void ListBoxItem::set_text(const std::string &text)
 ListBox::ListBox()
 {
     m_store = gtk_list_store_new(1, G_TYPE_STRING);
-    GtkWidget *tree_view = gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_store));
+    m_treeview = gtk_tree_view_new_with_model(GTK_TREE_MODEL(m_store));
 
     GtkCellRenderer *renderer = gtk_cell_renderer_text_new();
-    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(tree_view),
+    gtk_tree_view_insert_column_with_attributes(GTK_TREE_VIEW(m_treeview),
         -1, "", renderer, "text", 0, NULL);
 
     m_gtkwidget = gtk_scrolled_window_new(NULL, NULL);
-    gtk_container_add(GTK_CONTAINER(m_gtkwidget), tree_view);
+    gtk_container_add(GTK_CONTAINER(m_gtkwidget), m_treeview);
     gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_gtkwidget),
             GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
 }
@@ -133,7 +133,7 @@ void ListBox::add_item(ListBoxItem *item)
 void ListBox::scroll_to(ListBoxItem *item)
 {
     GtkTreePath *path = gtk_tree_row_reference_get_path(item->m_rowref);
-    gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(m_gtkwidget), path, NULL,
+    gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(m_treeview), path, NULL,
                                  false, 0, 0);
     gtk_tree_path_free(path);
 }
