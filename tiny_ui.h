@@ -150,6 +150,7 @@ public:
     ~ListBox();
 
     void add_item(ListBoxItem *item);
+    void scroll_to(ListBoxItem *item);
 
 private:
 #ifdef TINYUI_GTK

@@ -99,6 +99,11 @@ void ListBox::add_item(ListBoxItem *item)
     m_qtwidget->addItem(item->m_qtitem);
 }
 
+void ListBox::scroll_to(ListBoxItem *item)
+{
+    m_qtwidget->scrollToItem(item->m_qtitem);
+}
+
 QWidget *ListBox::qt_widget()
 {
     return m_qtwidget;

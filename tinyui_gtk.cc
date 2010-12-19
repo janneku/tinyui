@@ -130,6 +130,14 @@ void ListBox::add_item(ListBoxItem *item)
     gtk_tree_path_free(path);
 }
 
+void ListBox::scroll_to(ListBoxItem *item)
+{
+    GtkTreePath *path = gtk_tree_row_reference_get_path(item->m_rowref);
+    gtk_tree_view_scroll_to_cell(GTK_TREE_VIEW(m_gtkwidget), path, NULL,
+                                 false, 0, 0);
+    gtk_tree_path_free(path);
+}
+
 GtkWidget *ListBox::gtk_widget()
 {
     return m_gtkwidget;
