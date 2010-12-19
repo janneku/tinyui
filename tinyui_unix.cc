@@ -7,7 +7,8 @@
 
 SigIntHandler *SigIntHandler::m_instance = NULL;
 
-SigIntHandler::SigIntHandler()
+SigIntHandler::SigIntHandler() :
+    m_handler(NULL)
 {
     if (m_instance)
         throw std::runtime_error("SIGINT handler already installed");
@@ -36,7 +37,8 @@ void SigIntHandler::ready(IoWatch *iowatch)
 {
     UNUSED(iowatch);
     char a;
-    read(m_fd[1], &a, sizeof a);
+    ssize_t ret = read(m_fd[1], &a, 1);
+    UNUSED(ret);
     if (m_handler)
         m_handler->quit();
 }
@@ -45,7 +47,7 @@ void SigIntHandler::signal_handler(int sig)
 {
     UNUSED(sig);
     char a = 0;
-    if (write(m_instance->m_fd[0], &a, sizeof a) < 0) {
+    if (write(m_instance->m_fd[0], &a, 1) < 1) {
         fprintf(stderr, "Unable to write to signal pipe\n");
         abort();
     }
