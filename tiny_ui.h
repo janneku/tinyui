@@ -62,6 +62,9 @@ class Widget {
 public:
     Widget() {}
 
+    void show();
+    void hide();
+
 #ifdef TINYUI_GTK
     virtual GtkWidget *gtk_widget() = 0;
 #endif

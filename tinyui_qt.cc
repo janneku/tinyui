@@ -10,6 +10,16 @@
 #include <QApplication>
 #include <QTimerEvent>
 
+void Widget::show()
+{
+    qt_widget()->show();
+}
+
+void Widget::hide()
+{
+    qt_widget()->hide();
+}
+
 BoxLayout::BoxLayout(Orientation orientation)
 {
     switch (orientation) {

@@ -5,6 +5,16 @@
 #include <string.h>
 #include <stdexcept>
 
+void Widget::show()
+{
+    gtk_widget_show(gtk_widget());
+}
+
+void Widget::hide()
+{
+    gtk_widget_hide(gtk_widget());
+}
+
 BoxLayout::BoxLayout(Orientation orientation)
 {
     switch (orientation) {
