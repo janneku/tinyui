@@ -6,14 +6,14 @@ class MyWindow: public Window, private ClickInterface, private IoWatchInterface,
 {
 public:
     MyWindow() :
-        Window(L"Hello world"),
+        Window(L"Hello world \x3A9"),
         m_mainbox(VERTICAL),
         m_quitbutton(L"Quit"),
         m_watch(0),
         m_timer(1000)
     {
         for (int i = 0; i < 5; ++i) {
-            m_items[i].set_text(L"item " + format_number(i));
+            m_items[i].set_text(L"item \x3A9 " + format_number(i));
             m_listbox.add_item(&m_items[i]);
 
             m_buttons[i].set_label(L"label " + format_number(i));
