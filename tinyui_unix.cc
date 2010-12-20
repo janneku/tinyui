@@ -52,3 +52,27 @@ void SigIntHandler::signal_handler(int sig)
         abort();
     }
 }
+
+std::string encode_utf8(const std::wstring &in)
+{
+    std::string out;
+    for (size_t i = 0; i < in.size(); ++i) {
+        unsigned int c = in[i];
+        if (c <= 0x7f) {
+            out += static_cast<char>(c);
+        } else if (c <= 0x7ff) {
+            out += static_cast<char>(0xc0 | ((c >> 6) & 0x1f));
+            out += static_cast<char>(0x80 | (c & 0x3f));
+        } else if (c <= 0xffff) {
+            out += static_cast<char>(0xe0 | ((c >> 12) & 0x0f));
+            out += static_cast<char>(0x80 | ((c >> 6) & 0x3f));
+            out += static_cast<char>(0x80 | (c & 0x3f));
+        } else {
+            out += static_cast<char>(0xf0 | ((c >> 18) & 0x07));
+            out += static_cast<char>(0x80 | ((c >> 12) & 0x3f));
+            out += static_cast<char>(0x80 | ((c >> 6) & 0x3f));
+            out += static_cast<char>(0x80 | (c & 0x3f));
+        }
+    }
+    return out;
+}

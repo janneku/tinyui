@@ -37,20 +37,30 @@ class QObject {};
     for (type::iterator next = (container).begin(), i = next++; \
          i != (container).end(); i = next++)
 
+std::string encode_utf8(const std::wstring &in);
+
 template<class T>
-std::string format_number(T val)
+std::wstring to_wstring(const T &str)
 {
-    std::ostringstream str;
-    str << val;
-    return str.str();
+    std::wstring out;
+    out.assign(str.begin(), str.end());
+    return out;
 }
 
 template<class T>
-std::string format_hex(T val, size_t width)
+std::wstring format_number(T val)
+{
+    std::ostringstream str;
+    str << val;
+    return to_wstring(str.str());
+}
+
+template<class T>
+std::wstring format_hex(T val, size_t width)
 {
     std::ostringstream str;
     str << std::setw(width) << std::setfill('0') << std::hex << val;
-    return str.str();
+    return to_wstring(str.str());
 }
 
 enum Orientation {
@@ -109,10 +119,10 @@ class Button: public QObject, public Widget {
     Q_OBJECT
 
 public:
-    explicit Button(const std::string &label = std::string());
+    explicit Button(const std::wstring &label = std::wstring());
     ~Button();
 
-    void set_label(const std::string &label);
+    void set_label(const std::wstring &label);
     void set_handler(ClickInterface *events);
 
 private:
@@ -136,14 +146,14 @@ class ListBoxItem {
     DISABLE_ASSIGN(ListBoxItem)
     friend class ListBox;
 public:
-    ListBoxItem(const std::string &text = std::string());
+    ListBoxItem(const std::wstring &text = std::wstring());
     ~ListBoxItem();
 
-    void set_text(const std::string &text);
+    void set_text(const std::wstring &text);
 
 private:
 #ifdef TINYUI_GTK
-    std::string m_text;
+    std::wstring m_text;
     GtkTreeRowReference *m_rowref;
 #endif
 #ifdef TINYUI_QT
@@ -193,7 +203,7 @@ private slots:
 class Window {
     DISABLE_ASSIGN(Window)
 public:
-    explicit Window(const std::string &title);
+    explicit Window(const std::wstring &title);
     ~Window();
     void set_widget(Widget *widget);
     void show();
@@ -204,7 +214,7 @@ private:
 #endif
 #ifdef TINYUI_QT
     QWidget *m_qtwidget;
-    std::string m_title;
+    std::wstring m_title;
 #endif
 };
 

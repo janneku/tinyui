@@ -51,10 +51,10 @@ QWidget *BoxLayout::qt_widget()
     return m_qtwidget;
 }
 
-Button::Button(const std::string &label) :
+Button::Button(const std::wstring &label) :
     m_handler(NULL)
 {
-    m_qtwidget = new QPushButton(QString::fromStdString(label));
+    m_qtwidget = new QPushButton(QString::fromStdWString(label));
     connect(m_qtwidget, SIGNAL(clicked()), SLOT(clicked_slot()));
 }
 
@@ -63,9 +63,9 @@ Button::~Button()
     delete m_qtwidget;
 }
 
-void Button::set_label(const std::string &label)
+void Button::set_label(const std::wstring &label)
 {
-    m_qtwidget->setText(QString::fromStdString(label));
+    m_qtwidget->setText(QString::fromStdWString(label));
 }
 
 QWidget *Button::qt_widget()
@@ -79,9 +79,9 @@ void Button::clicked_slot()
         m_handler->clicked(this);
 }
 
-ListBoxItem::ListBoxItem(const std::string &text)
+ListBoxItem::ListBoxItem(const std::wstring &text)
 {
-    m_qtitem = new QListWidgetItem(QString::fromStdString(text));
+    m_qtitem = new QListWidgetItem(QString::fromStdWString(text));
     m_qtitem->setData(Qt::UserRole, QVariant::fromValue<void *>(this));
 }
 
@@ -90,9 +90,9 @@ ListBoxItem::~ListBoxItem()
     delete m_qtitem;
 }
 
-void ListBoxItem::set_text(const std::string &text)
+void ListBoxItem::set_text(const std::wstring &text)
 {
-    m_qtitem->setText(QString::fromStdString(text));
+    m_qtitem->setText(QString::fromStdWString(text));
 }
 
 ListBox::ListBox() :
@@ -131,7 +131,7 @@ void ListBox::itemActivated_slot(QListWidgetItem *qtitem)
         m_handler->clicked(this, item);
 }
 
-Window::Window(const std::string &title) :
+Window::Window(const std::wstring &title) :
     m_title(title)
 {
 }
@@ -143,7 +143,7 @@ Window::~Window()
 void Window::set_widget(Widget *widget)
 {
     m_qtwidget = widget->qt_widget();
-    m_qtwidget->setWindowTitle(QString::fromStdString(m_title));
+    m_qtwidget->setWindowTitle(QString::fromStdWString(m_title));
 }
 
 void Window::show()

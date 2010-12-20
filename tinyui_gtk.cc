@@ -60,10 +60,10 @@ GtkWidget *BoxLayout::gtk_widget()
     return m_gtkwidget;
 }
 
-Button::Button(const std::string &label) :
+Button::Button(const std::wstring &label) :
     m_handler(NULL)
 {
-    m_gtkwidget = gtk_button_new_with_label(label.c_str());
+    m_gtkwidget = gtk_button_new_with_label(encode_utf8(label).c_str());
     g_signal_connect(m_gtkwidget, "clicked", G_CALLBACK(clicked_cb), this);
 }
 
@@ -72,9 +72,9 @@ Button::~Button()
     gtk_widget_destroy(m_gtkwidget);
 }
 
-void Button::set_label(const std::string &label)
+void Button::set_label(const std::wstring &label)
 {
-    gtk_button_set_label(GTK_BUTTON(m_gtkwidget), label.c_str());
+    gtk_button_set_label(GTK_BUTTON(m_gtkwidget), encode_utf8(label).c_str());
 }
 
 bool Button::expandable(Orientation orientation)
@@ -94,7 +94,7 @@ void Button::clicked_cb(GtkWidget *widget, Button *button)
         button->m_handler->clicked(button);
 }
 
-ListBoxItem::ListBoxItem(const std::string &text) :
+ListBoxItem::ListBoxItem(const std::wstring &text) :
     m_text(text), m_rowref(NULL)
 {
 }
@@ -114,7 +114,7 @@ ListBoxItem::~ListBoxItem()
     gtk_tree_row_reference_free(m_rowref);
 }
 
-void ListBoxItem::set_text(const std::string &text)
+void ListBoxItem::set_text(const std::wstring &text)
 {
     m_text = text;
     if (m_rowref == NULL)
@@ -126,7 +126,8 @@ void ListBoxItem::set_text(const std::string &text)
     gtk_tree_model_get_iter(model, &iter, path);
     gtk_tree_path_free(path);
 
-    gtk_list_store_set(GTK_LIST_STORE(model), &iter, 0, text.c_str(), -1);
+    gtk_list_store_set(GTK_LIST_STORE(model), &iter,
+                       0, encode_utf8(text).c_str(), -1);
 }
 
 ListBox::ListBox() :
@@ -160,7 +161,8 @@ void ListBox::add_item(ListBoxItem *item)
 {
     GtkTreeIter iter;
     gtk_list_store_append(m_store, &iter);
-    gtk_list_store_set(m_store, &iter, 0, item->m_text.c_str(), 1, item, -1);
+    gtk_list_store_set(m_store, &iter,
+                       0, encode_utf8(item->m_text).c_str(), 1, item, -1);
 
     GtkTreePath *path =
         gtk_tree_model_get_path(GTK_TREE_MODEL(m_store), &iter);
@@ -207,11 +209,11 @@ GtkWidget *ListBox::gtk_widget()
     return m_gtkwidget;
 }
 
-Window::Window(const std::string &title)
+Window::Window(const std::wstring &title)
 {
     m_gtkwidget = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     gtk_container_set_border_width(GTK_CONTAINER(m_gtkwidget), 5);
-    gtk_window_set_title(GTK_WINDOW(m_gtkwidget), title.c_str());
+    gtk_window_set_title(GTK_WINDOW(m_gtkwidget), encode_utf8(title).c_str());
 }
 
 Window::~Window()
