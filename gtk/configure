@@ -1,0 +1,38 @@
+#!/bin/sh
+
+prefix=/usr/local
+
+for opt in "$@" ; do
+	case $opt in
+	--prefix=*)
+		prefix=$(echo $opt | sed -n 's/--prefix=\(.*\)/\1/p')
+		;;
+	--home)
+		prefix="$HOME"
+		;;
+	--help)
+		echo ""
+		echo "Valid options are:"
+		echo "--prefix=dir           Install to prefix 'dir'"
+		echo "--home                 Set prefix to \$HOME (install to user's home dir)"
+		echo "                       but copy files to 'dest/prefix' on make install"
+		exit
+		;;
+	esac
+done
+
+if test -d "$prefix/lib64"; then
+	libpath="$prefix/lib64"
+else
+	libpath="$prefix/lib"
+fi
+
+sed -e "s|{PREFIX}|$prefix|g" \
+	-e "s|{LIBPATH}|$libpath|g" \
+	< Makefile.in > Makefile
+
+echo
+echo "Install prefix:  $prefix"
+echo "Library path:    $libpath"
+echo
+echo "Configure successful"

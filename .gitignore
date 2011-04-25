@@ -1,2 +1,6 @@
 moc_*
 *.o
+*.so
+*.so.*0
+*.so.*1
+Makefile

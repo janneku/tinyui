@@ -1,0 +1,18 @@
+CXXFLAGS = -g `pkg-config gtk+-2.0 --cflags` -DTINYUI_GTK -W -Wall -O2 -fPIC -shared -I..
+OBJS = tinyui.o ../common.o ../unix.o
+LIB = libtinyui-gtk.so
+PREFIX = {PREFIX}
+LIBPATH = {LIBPATH}
+
+all: $(LIB)
+
+$(LIB): $(OBJS)
+	$(CXX) $(CXXFLAGS) -Wl,-soname,$(LIB) -o $(LIB) $(OBJS)
+
+install:
+	install -m 755 $(LIB) $(DESTDIR)$(LIBPATH)
+	mkdir -p -m 755 $(DESTDIR)$(PREFIX)/include/tinyui
+	install -m 644 ../tiny_ui.h $(DESTDIR)$(PREFIX)/include/tinyui
+
+clean:
+	rm -rf $(OBJS) $(LIB)
