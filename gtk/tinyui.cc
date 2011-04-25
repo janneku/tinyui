@@ -128,7 +128,7 @@ void ListBoxItem::set_text(const std::wstring &text)
 	gtk_tree_path_free(path);
 
 	gtk_list_store_set(GTK_LIST_STORE(model), &iter,
-					   0, encode_utf8(text).c_str(), -1);
+			   0, encode_utf8(text).c_str(), -1);
 }
 
 ListBox::ListBox() :
@@ -148,7 +148,8 @@ ListBox::ListBox() :
 #else
 	m_gtkwidget = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(m_gtkwidget),
-			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
+				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_AUTOMATIC);
 #endif
 	gtk_container_add(GTK_CONTAINER(m_gtkwidget), m_treeview);
 }
