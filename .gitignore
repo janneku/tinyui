@@ -3,4 +3,3 @@ moc_*
 *.so
 *.so.*0
 *.so.*1
-Makefile
