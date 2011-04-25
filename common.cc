@@ -2,29 +2,29 @@
 
 namespace tinyui {
 
-void Button::set_handler(ClickInterface *events)
-{
-	m_handler = events;
-}
-
-void ListBox::set_handler(ListBoxInterface *handler)
+void Button::set_handler(ButtonEvents *handler)
 {
 	m_handler = handler;
 }
 
-void IoWatch::set_handler(IoWatchInterface *events)
+void ListBox::set_handler(ListBoxEvents *handler)
 {
-	m_handler = events;
+	m_handler = handler;
 }
 
-void Timer::set_handler(TimerInterface *events)
+void IoWatch::set_handler(IoWatchEvents *handler)
 {
-	m_handler = events;
+	m_handler = handler;
 }
 
-void Entry::set_handler(EntryInterface *events)
+void Timer::set_handler(TimerEvents *handler)
 {
-	m_handler = events;
+	m_handler = handler;
+}
+
+void Entry::set_handler(EntryEvents *handler)
+{
+	m_handler = handler;
 }
 
 Application *Application::instance()

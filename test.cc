@@ -1,9 +1,9 @@
 #include "tiny_ui.h"
 #include <stdio.h>
 
-class MyWindow: public tinyui::Window, tinyui::ClickInterface,
-		tinyui::IoWatchInterface, tinyui::TimerInterface,
-		tinyui::ListBoxInterface, tinyui::EntryInterface
+class MyWindow: public tinyui::Window, tinyui::ButtonEvents,
+		tinyui::IoWatchEvents, tinyui::TimerEvents,
+		tinyui::ListBoxEvents, tinyui::EntryEvents
 {
 public:
 	MyWindow() :

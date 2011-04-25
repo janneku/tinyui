@@ -113,7 +113,7 @@ private:
 
 class Button;
 
-class ClickInterface {
+class ButtonEvents {
 public:
 	virtual void clicked(Button *button) = 0;
 };
@@ -127,10 +127,10 @@ public:
 	~Button();
 
 	void set_label(const std::wstring &label);
-	void set_handler(ClickInterface *events);
+	void set_handler(ButtonEvents *handler);
 
 private:
-	ClickInterface *m_handler;
+	ButtonEvents *m_handler;
 
 #ifdef TINYUI_GTK
 	GtkWidget *m_gtkwidget;
@@ -167,7 +167,7 @@ private:
 
 class ListBox;
 
-class ListBoxInterface {
+class ListBoxEvents {
 public:
 	virtual void clicked(ListBox *listbox, ListBoxItem *item) = 0;
 };
@@ -180,13 +180,13 @@ public:
 	ListBox();
 	~ListBox();
 
-	void set_handler(ListBoxInterface *handler);
+	void set_handler(ListBoxEvents *handler);
 
 	void add_item(ListBoxItem *item);
 	void scroll_to(ListBoxItem *item);
 
 private:
-	ListBoxInterface *m_handler;
+	ListBoxEvents *m_handler;
 
 #ifdef TINYUI_GTK
 	GtkWidget *m_gtkwidget, *m_treeview;
@@ -224,7 +224,7 @@ private:
 
 class Entry;
 
-class EntryInterface {
+class EntryEvents {
 public:
 	virtual void activated(Entry *entry) = 0;
 };
@@ -238,12 +238,12 @@ public:
 	~Entry();
 
 	void set_text(const std::wstring &text);
-	void set_handler(EntryInterface *events);
+	void set_handler(EntryEvents *handler);
 
 	std::wstring get_text() const;
 
 private:
-	EntryInterface *m_handler;
+	EntryEvents *m_handler;
 
 #ifdef TINYUI_GTK
 	GtkWidget *m_gtkwidget;
@@ -261,7 +261,7 @@ private slots:
 
 class IoWatch;
 
-class IoWatchInterface {
+class IoWatchEvents {
 public:
 	virtual void ready(IoWatch *iowatch) = 0;
 };
@@ -274,10 +274,10 @@ public:
 	explicit IoWatch(int fd);
 	~IoWatch();
 
-	void set_handler(IoWatchInterface *events);
+	void set_handler(IoWatchEvents *handler);
 
 private:
-	IoWatchInterface *m_handler;
+	IoWatchEvents *m_handler;
 
 #ifdef TINYUI_GTK
 	GIOChannel *m_iochannel;
@@ -294,7 +294,7 @@ private slots:
 
 class Timer;
 
-class TimerInterface {
+class TimerEvents {
 public:
 	virtual void timeout(Timer *timer) = 0;
 };
@@ -304,10 +304,10 @@ public:
 	explicit Timer(int interval);
 	~Timer();
 
-	void set_handler(TimerInterface *events);
+	void set_handler(TimerEvents *handler);
 
 private:
-	TimerInterface *m_handler;
+	TimerEvents *m_handler;
 
 #ifdef TINYUI_GTK
 	guint m_id;
@@ -325,7 +325,7 @@ public:
 	virtual void quit() = 0;
 };
 
-class SigIntHandler: private IoWatchInterface {
+class SigIntHandler: private IoWatchEvents {
 public:
 	SigIntHandler();
 
