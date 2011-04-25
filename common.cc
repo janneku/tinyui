@@ -1,5 +1,7 @@
 #include "tiny_ui.h"
 
+namespace tinyui {
+
 void Button::set_handler(ClickInterface *events)
 {
 	m_handler = events;
@@ -27,3 +29,4 @@ Application *Application::instance()
 
 Application *Application::m_instance = NULL;
 
+}

@@ -8,6 +8,8 @@
 #include <hildon/hildon.h>
 #endif
 
+namespace tinyui {
+
 void Widget::show()
 {
 	gtk_widget_show(gtk_widget());
@@ -291,4 +293,6 @@ int Application::run()
 {
 	gtk_main();
 	return 0;
+}
+
 }

@@ -5,6 +5,8 @@
 #include <stdio.h>
 #include <cstdlib>
 
+namespace tinyui {
+
 SigIntHandler *SigIntHandler::m_instance = NULL;
 
 SigIntHandler::SigIntHandler() :
@@ -75,4 +77,6 @@ std::string encode_utf8(const std::wstring &in)
 		}
 	}
 	return out;
+}
+
 }

@@ -10,6 +10,8 @@
 #include <QApplication>
 #include <QTimerEvent>
 
+namespace tinyui {
+
 void Widget::show()
 {
 	qt_widget()->show();
@@ -203,4 +205,6 @@ void Application::quit()
 int Application::run()
 {
 	return qApp->exec();
+}
+
 }

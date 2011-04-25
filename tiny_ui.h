@@ -37,6 +37,8 @@ class QObject {};
 	for (type::iterator next = (container).begin(), i = next++; \
 		 i != (container).end(); i = next++)
 
+namespace tinyui {
+
 std::string encode_utf8(const std::wstring &in);
 
 template<class T>
@@ -312,5 +314,7 @@ public:
 private:
 	static Application *m_instance;
 };
+
+}
 
 #endif
