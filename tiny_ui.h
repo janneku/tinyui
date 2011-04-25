@@ -26,61 +26,61 @@ class QObject {};
 #define UNUSED(x) (void)(x)
 
 #define DISABLE_ASSIGN(x) \
-    private: \
-        void operator =(const x &from);
+	private: \
+		void operator =(const x &from);
 
 #undef foreach
 #define foreach(type, i, container) \
-    for (type::iterator i = (container).begin(); i != (container).end(); ++i)
+	for (type::iterator i = (container).begin(); i != (container).end(); ++i)
 
 #define foreach_safe(type, i, container) \
-    for (type::iterator next = (container).begin(), i = next++; \
-         i != (container).end(); i = next++)
+	for (type::iterator next = (container).begin(), i = next++; \
+		 i != (container).end(); i = next++)
 
 std::string encode_utf8(const std::wstring &in);
 
 template<class T>
 std::wstring to_wstring(const T &str)
 {
-    std::wstring out;
-    out.assign(str.begin(), str.end());
-    return out;
+	std::wstring out;
+	out.assign(str.begin(), str.end());
+	return out;
 }
 
 template<class T>
 std::wstring format_number(T val)
 {
-    std::ostringstream str;
-    str << val;
-    return to_wstring(str.str());
+	std::ostringstream str;
+	str << val;
+	return to_wstring(str.str());
 }
 
 template<class T>
 std::wstring format_hex(T val, size_t width)
 {
-    std::ostringstream str;
-    str << std::setw(width) << std::setfill('0') << std::hex << val;
-    return to_wstring(str.str());
+	std::ostringstream str;
+	str << std::setw(width) << std::setfill('0') << std::hex << val;
+	return to_wstring(str.str());
 }
 
 enum Orientation {
-    VERTICAL,
-    HORIZONTAL,
+	VERTICAL,
+	HORIZONTAL,
 };
 
 class Widget {
 public:
-    Widget() {}
+	Widget() {}
 
-    void show();
-    void hide();
+	void show();
+	void hide();
 
 #ifdef TINYUI_GTK
-    virtual bool expandable(Orientation orientation) = 0;
-    virtual GtkWidget *gtk_widget() = 0;
+	virtual bool expandable(Orientation orientation) = 0;
+	virtual GtkWidget *gtk_widget() = 0;
 #endif
 #ifdef TINYUI_QT
-    virtual QWidget *qt_widget() = 0;
+	virtual QWidget *qt_widget() = 0;
 #endif
 };
 
@@ -88,76 +88,76 @@ class Button;
 
 class ClickInterface {
 public:
-    virtual void clicked(Button *button) = 0;
+	virtual void clicked(Button *button) = 0;
 };
 
 class BoxLayout: public Widget {
-    DISABLE_ASSIGN(BoxLayout)
+	DISABLE_ASSIGN(BoxLayout)
 public:
-    BoxLayout(Orientation orientation);
-    ~BoxLayout();
+	BoxLayout(Orientation orientation);
+	~BoxLayout();
 
-    void add_widget(Widget *widget);
+	void add_widget(Widget *widget);
 
 private:
 #ifdef TINYUI_GTK
-    Orientation m_orientation;
-    bool m_expandable[2];
-    GtkWidget *m_gtkwidget;
-    bool expandable(Orientation orientation);
-    GtkWidget *gtk_widget();
+	Orientation m_orientation;
+	bool m_expandable[2];
+	GtkWidget *m_gtkwidget;
+	bool expandable(Orientation orientation);
+	GtkWidget *gtk_widget();
 #endif
 #ifdef TINYUI_QT
-    QBoxLayout *m_qtlayout;
-    QWidget *m_qtwidget;
-    QWidget *qt_widget();
+	QBoxLayout *m_qtlayout;
+	QWidget *m_qtwidget;
+	QWidget *qt_widget();
 #endif
 };
 
 class Button: public QObject, public Widget {
-    DISABLE_ASSIGN(Button)
-    Q_OBJECT
+	DISABLE_ASSIGN(Button)
+	Q_OBJECT
 
 public:
-    explicit Button(const std::wstring &label = std::wstring());
-    ~Button();
+	explicit Button(const std::wstring &label = std::wstring());
+	~Button();
 
-    void set_label(const std::wstring &label);
-    void set_handler(ClickInterface *events);
+	void set_label(const std::wstring &label);
+	void set_handler(ClickInterface *events);
 
 private:
-    ClickInterface *m_handler;
+	ClickInterface *m_handler;
 
 #ifdef TINYUI_GTK
-    GtkWidget *m_gtkwidget;
-    bool expandable(Orientation orientation);
-    GtkWidget *gtk_widget();
-    static void clicked_cb(GtkWidget *widget, Button *button);
+	GtkWidget *m_gtkwidget;
+	bool expandable(Orientation orientation);
+	GtkWidget *gtk_widget();
+	static void clicked_cb(GtkWidget *widget, Button *button);
 #endif
 #ifdef TINYUI_QT
-    QPushButton *m_qtwidget;
-    QWidget *qt_widget();
+	QPushButton *m_qtwidget;
+	QWidget *qt_widget();
 private slots:
-    void clicked_slot();
+	void clicked_slot();
 #endif
 };
 
 class ListBoxItem {
-    DISABLE_ASSIGN(ListBoxItem)
-    friend class ListBox;
+	DISABLE_ASSIGN(ListBoxItem)
+	friend class ListBox;
 public:
-    ListBoxItem(const std::wstring &text = std::wstring());
-    ~ListBoxItem();
+	ListBoxItem(const std::wstring &text = std::wstring());
+	~ListBoxItem();
 
-    void set_text(const std::wstring &text);
+	void set_text(const std::wstring &text);
 
 private:
 #ifdef TINYUI_GTK
-    std::wstring m_text;
-    GtkTreeRowReference *m_rowref;
+	std::wstring m_text;
+	GtkTreeRowReference *m_rowref;
 #endif
 #ifdef TINYUI_QT
-    QListWidgetItem *m_qtitem;
+	QListWidgetItem *m_qtitem;
 #endif
 };
 
@@ -165,56 +165,56 @@ class ListBox;
 
 class ListBoxInterface {
 public:
-    virtual void clicked(ListBox *listbox, ListBoxItem *item) = 0;
+	virtual void clicked(ListBox *listbox, ListBoxItem *item) = 0;
 };
 
 class ListBox: public QObject, public Widget {
-    DISABLE_ASSIGN(ListBox)
-    Q_OBJECT
+	DISABLE_ASSIGN(ListBox)
+	Q_OBJECT
 
 public:
-    ListBox();
-    ~ListBox();
+	ListBox();
+	~ListBox();
 
-    void set_handler(ListBoxInterface *handler);
+	void set_handler(ListBoxInterface *handler);
 
-    void add_item(ListBoxItem *item);
-    void scroll_to(ListBoxItem *item);
+	void add_item(ListBoxItem *item);
+	void scroll_to(ListBoxItem *item);
 
 private:
-    ListBoxInterface *m_handler;
+	ListBoxInterface *m_handler;
 
 #ifdef TINYUI_GTK
-    GtkWidget *m_gtkwidget, *m_treeview;
-    GtkListStore *m_store;
-    bool expandable(Orientation orientation);
-    GtkWidget *gtk_widget();
-    static void activated_cb(GtkTreeView *treeview, GtkTreePath *path,
-                             GtkTreeViewColumn *col, ListBox *listbox);
+	GtkWidget *m_gtkwidget, *m_treeview;
+	GtkListStore *m_store;
+	bool expandable(Orientation orientation);
+	GtkWidget *gtk_widget();
+	static void activated_cb(GtkTreeView *treeview, GtkTreePath *path,
+				 GtkTreeViewColumn *col, ListBox *listbox);
 #endif
 #ifdef TINYUI_QT
-    QListWidget *m_qtwidget;
-    QWidget *qt_widget();
+	QListWidget *m_qtwidget;
+	QWidget *qt_widget();
 private slots:
-    void itemActivated_slot(QListWidgetItem *qtitem);
+	void itemActivated_slot(QListWidgetItem *qtitem);
 #endif
 };
 
 class Window {
-    DISABLE_ASSIGN(Window)
+	DISABLE_ASSIGN(Window)
 public:
-    explicit Window(const std::wstring &title);
-    ~Window();
-    void set_widget(Widget *widget);
-    void show();
+	explicit Window(const std::wstring &title);
+	~Window();
+	void set_widget(Widget *widget);
+	void show();
 
 private:
 #ifdef TINYUI_GTK
-    GtkWidget *m_gtkwidget;
+	GtkWidget *m_gtkwidget;
 #endif
 #ifdef TINYUI_QT
-    QWidget *m_qtwidget;
-    std::wstring m_title;
+	QWidget *m_qtwidget;
+	std::wstring m_title;
 #endif
 };
 
@@ -222,32 +222,32 @@ class IoWatch;
 
 class IoWatchInterface {
 public:
-    virtual void ready(IoWatch *iowatch) = 0;
+	virtual void ready(IoWatch *iowatch) = 0;
 };
 
 class IoWatch: public QObject {
-    DISABLE_ASSIGN(IoWatch)
-    Q_OBJECT
+	DISABLE_ASSIGN(IoWatch)
+	Q_OBJECT
 
 public:
-    explicit IoWatch(int fd);
-    ~IoWatch();
+	explicit IoWatch(int fd);
+	~IoWatch();
 
-    void set_handler(IoWatchInterface *events);
+	void set_handler(IoWatchInterface *events);
 
 private:
-    IoWatchInterface *m_handler;
+	IoWatchInterface *m_handler;
 
 #ifdef TINYUI_GTK
-    GIOChannel *m_iochannel;
-    int m_id;
-    static bool io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
-                            IoWatch *iowatch);
+	GIOChannel *m_iochannel;
+	int m_id;
+	static bool io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
+				IoWatch *iowatch);
 #endif
 #ifdef TINYUI_QT
-    QSocketNotifier *m_notifier;
+	QSocketNotifier *m_notifier;
 private slots:
-    void activated_slot();
+	void activated_slot();
 #endif
 };
 
@@ -255,62 +255,62 @@ class Timer;
 
 class TimerInterface {
 public:
-    virtual void timeout(Timer *timer) = 0;
+	virtual void timeout(Timer *timer) = 0;
 };
 
 class Timer: public QObject {
 public:
-    explicit Timer(int interval);
-    ~Timer();
+	explicit Timer(int interval);
+	~Timer();
 
-    void set_handler(TimerInterface *events);
+	void set_handler(TimerInterface *events);
 
 private:
-    TimerInterface *m_handler;
+	TimerInterface *m_handler;
 
 #ifdef TINYUI_GTK
-    guint m_id;
-    static bool timer_cb(Timer *timer);
+	guint m_id;
+	static bool timer_cb(Timer *timer);
 #endif
 #ifdef TINYUI_QT
-    int m_id;
-    void timerEvent(QTimerEvent *event);
+	int m_id;
+	void timerEvent(QTimerEvent *event);
 #endif
 };
 
 class QuitInterface
 {
 public:
-    virtual void quit() = 0;
+	virtual void quit() = 0;
 };
 
 class SigIntHandler: private IoWatchInterface {
 public:
-    SigIntHandler();
+	SigIntHandler();
 
-    void set_handler(QuitInterface *handler);
+	void set_handler(QuitInterface *handler);
 
 private:
-    QuitInterface *m_handler;
-    int m_fd[2];
+	QuitInterface *m_handler;
+	int m_fd[2];
 
-    void ready(IoWatch *iowatch);
+	void ready(IoWatch *iowatch);
 
-    static SigIntHandler *m_instance;
-    static void signal_handler(int sig);
+	static SigIntHandler *m_instance;
+	static void signal_handler(int sig);
 };
 
 class Application: public QuitInterface {
 public:
-    Application(int *argc, char ***argv);
+	Application(int *argc, char ***argv);
 
-    void quit();
-    int run();
+	void quit();
+	int run();
 
-    static Application *instance();
+	static Application *instance();
 
 private:
-    static Application *m_instance;
+	static Application *m_instance;
 };
 
 #endif
