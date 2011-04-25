@@ -3,11 +3,18 @@ Copyright 2010 Janne Kulmala <janne.t.kulmala@iki.fi>
 
 Program code is licensed with GNU LGPL 2.1. See COPYING.LGPL file.
 
-Supported GUI toolkits:
+The purpose of this library is to wrap the common functionality of 
+popular GUI toolkits and provide simple and clean STL-compatible C++ 
+interface that makes sense.
+
+Currently implemented features:
+ * Windows
+ * Buttons
+ * List boxes
+ * I/O watch
+ * Timers
+
+Supported GUI toolkits
+----------------------
  * gtk+ 2
  * Qt 4
-
-Features:
- * Standard C++ and STL
- * No signal and slots or preprocessors
- * Automatic widget layout (unlike gtk+)
