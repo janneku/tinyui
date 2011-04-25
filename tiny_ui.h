@@ -18,6 +18,7 @@ class QWidget;
 class QSocketNotifier;
 class QListWidgetItem;
 class QListWidget;
+class QLineEdit;
 #else
 #define Q_OBJECT
 class QObject {};
@@ -40,6 +41,7 @@ class QObject {};
 namespace tinyui {
 
 std::string encode_utf8(const std::wstring &in);
+std::wstring decode_utf8(const std::string &in);
 
 template<class T>
 std::wstring to_wstring(const T &str)
@@ -86,13 +88,6 @@ public:
 #endif
 };
 
-class Button;
-
-class ClickInterface {
-public:
-	virtual void clicked(Button *button) = 0;
-};
-
 class BoxLayout: public Widget {
 	DISABLE_ASSIGN(BoxLayout)
 public:
@@ -114,6 +109,13 @@ private:
 	QWidget *m_qtwidget;
 	QWidget *qt_widget();
 #endif
+};
+
+class Button;
+
+class ClickInterface {
+public:
+	virtual void clicked(Button *button) = 0;
 };
 
 class Button: public QObject, public Widget {
@@ -217,6 +219,43 @@ private:
 #ifdef TINYUI_QT
 	QWidget *m_qtwidget;
 	std::wstring m_title;
+#endif
+};
+
+class Entry;
+
+class EntryInterface {
+public:
+	virtual void activated(Entry *entry) = 0;
+};
+
+class Entry: public QObject, public Widget {
+	DISABLE_ASSIGN(Entry)
+	Q_OBJECT
+
+public:
+	explicit Entry(const std::wstring &text = std::wstring());
+	~Entry();
+
+	void set_text(const std::wstring &text);
+	void set_handler(EntryInterface *events);
+
+	std::wstring get_text() const;
+
+private:
+	EntryInterface *m_handler;
+
+#ifdef TINYUI_GTK
+	GtkWidget *m_gtkwidget;
+	bool expandable(Orientation orientation);
+	GtkWidget *gtk_widget();
+	static void activate_cb(GtkWidget *widget, Entry *Entry);
+#endif
+#ifdef TINYUI_QT
+	QLineEdit *m_qtwidget;
+	QWidget *qt_widget();
+private slots:
+	void returnPressed_slot();
 #endif
 };
 

@@ -79,4 +79,39 @@ std::string encode_utf8(const std::wstring &in)
 	return out;
 }
 
+std::wstring decode_utf8(const std::string &in)
+{
+	std::wstring out;
+	for (size_t i = 0; i < in.size(); ++i) {
+		unsigned char c = in[i];
+		unsigned int wc = 0;
+		if ((c & 0xf0) == 0xf0) {
+			if (i + 3 >= in.size())
+				break;
+			wc = (static_cast<unsigned char>(c & ~0xF0) << 18) +
+			     (static_cast<unsigned char>(in[i + 1] & ~0x80) << 12) +
+			     (static_cast<unsigned char>(in[i + 2] & ~0x80) << 6) +
+			     static_cast<unsigned char>(in[i + 3] & ~0x80);
+			i += 2;
+		} else if ((c & 0xe0) == 0xe0) {
+			if (i + 2 >= in.size())
+				break;
+			wc = (static_cast<unsigned char>(c & ~0xE0) << 12) +
+			     (static_cast<unsigned char>(in[i + 1] & ~0x80) << 6) +
+			      static_cast<unsigned char>(in[i + 2] & ~0x80);
+			i += 1;
+		} else if ((c & 0xc0) == 0xc0) {
+			if (i + 1 >= in.size())
+				break;
+			wc = (static_cast<unsigned char>(c & ~0xC0) << 6) +
+			      static_cast<unsigned char>(in[i + 1] & ~0x80);
+			i++;
+		} else if (c <= 0x7f)
+			wc = c;
+		if (static_cast<wchar_t>(wc) == wc)
+			out += static_cast<wchar_t>(wc);
+	}
+	return out;
+}
+
 }

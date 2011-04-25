@@ -22,6 +22,11 @@ void Timer::set_handler(TimerInterface *events)
 	m_handler = events;
 }
 
+void Entry::set_handler(EntryInterface *events)
+{
+	m_handler = events;
+}
+
 Application *Application::instance()
 {
 	return m_instance;

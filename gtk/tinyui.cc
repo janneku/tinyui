@@ -235,6 +235,46 @@ void Window::show()
 	gtk_widget_show_all(m_gtkwidget);
 }
 
+Entry::Entry(const std::wstring &text) :
+	m_handler(NULL)
+{
+	m_gtkwidget = gtk_entry_new();
+	gtk_entry_set_text(GTK_ENTRY(m_gtkwidget), encode_utf8(text).c_str());
+	g_signal_connect(m_gtkwidget, "activate", G_CALLBACK(activate_cb), this);
+}
+
+Entry::~Entry()
+{
+	gtk_widget_destroy(m_gtkwidget);
+}
+
+void Entry::set_text(const std::wstring &text)
+{
+	gtk_entry_set_text(GTK_ENTRY(m_gtkwidget), encode_utf8(text).c_str());
+}
+
+std::wstring Entry::get_text() const
+{
+	return decode_utf8(gtk_entry_get_text(GTK_ENTRY(m_gtkwidget)));
+}
+
+bool Entry::expandable(Orientation orientation)
+{
+	return orientation == HORIZONTAL;
+}
+
+GtkWidget *Entry::gtk_widget()
+{
+	return m_gtkwidget;
+}
+
+void Entry::activate_cb(GtkWidget *widget, Entry *entry)
+{
+	UNUSED(widget);
+	if (entry->m_handler)
+		entry->m_handler->activated(entry);
+}
+
 IoWatch::IoWatch(int fd) :
 	m_handler(NULL)
 {

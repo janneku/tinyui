@@ -3,7 +3,7 @@
 
 class MyWindow: public tinyui::Window, tinyui::ClickInterface,
 		tinyui::IoWatchInterface, tinyui::TimerInterface,
-		tinyui::ListBoxInterface
+		tinyui::ListBoxInterface, tinyui::EntryInterface
 {
 public:
 	MyWindow() :
@@ -11,7 +11,8 @@ public:
 		m_mainbox(tinyui::VERTICAL),
 		m_quitbutton(L"Quit"),
 		m_watch(0),
-		m_timer(1000)
+		m_timer(1000),
+		m_entry(L"Please write here")
 	{
 		for (int i = 0; i < 5; ++i) {
 			m_items[i].set_text(L"item \x3A9 " + tinyui::format_number(i));
@@ -21,10 +22,12 @@ public:
 			m_buttons[i].set_handler(this);
 			m_mainbox.add_widget(&m_buttons[i]);
 		}
+		m_entry.set_handler(this);
 		m_listbox.set_handler(this);
 		m_quitbutton.set_handler(this);
 		m_watch.set_handler(this);
 		m_timer.set_handler(this);
+		m_mainbox.add_widget(&m_entry);
 		m_mainbox.add_widget(&m_listbox);
 		m_mainbox.add_widget(&m_quitbutton);
 		set_widget(&m_mainbox);
@@ -38,6 +41,7 @@ private:
 	tinyui::Button m_quitbutton;
 	tinyui::IoWatch m_watch;
 	tinyui::Timer m_timer;
+	tinyui::Entry m_entry;
 
 	void clicked(tinyui::Button *button)
 	{
@@ -68,6 +72,11 @@ private:
 			if (&m_items[i] == item)
 				printf("%d clicked\n", i);
 		}
+	}
+	void activated(tinyui::Entry *entry)
+	{
+		std::wstring s = entry->get_text();
+		printf("entry: <%s>\n", tinyui::encode_utf8(s).c_str());
 	}
 };
 

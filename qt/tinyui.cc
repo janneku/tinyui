@@ -7,6 +7,7 @@
 #include <QPushButton>
 #include <QSocketNotifier>
 #include <QListWidget>
+#include <QLineEdit>
 #include <QApplication>
 #include <QTimerEvent>
 
@@ -151,6 +152,39 @@ void Window::set_widget(Widget *widget)
 void Window::show()
 {
 	m_qtwidget->show();
+}
+
+Entry::Entry(const std::wstring &text) :
+	m_handler(NULL)
+{
+	m_qtwidget = new QLineEdit(QString::fromStdWString(text));
+	connect(m_qtwidget, SIGNAL(returnPressed()), SLOT(returnPressed_slot()));
+}
+
+Entry::~Entry()
+{
+	delete m_qtwidget;
+}
+
+void Entry::set_text(const std::wstring &text)
+{
+	m_qtwidget->setText(QString::fromStdWString(text));
+}
+
+std::wstring Entry::get_text() const
+{
+	return m_qtwidget->text().toStdWString();
+}
+
+QWidget *Entry::qt_widget()
+{
+	return m_qtwidget;
+}
+
+void Entry::returnPressed_slot()
+{
+	if (m_handler)
+		m_handler->activated(this);
 }
 
 IoWatch::IoWatch(int fd) :

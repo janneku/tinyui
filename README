@@ -11,6 +11,7 @@ Currently implemented features:
  * Windows
  * Buttons
  * List boxes
+ * Text entries
  * I/O watch
  * Timers
 
