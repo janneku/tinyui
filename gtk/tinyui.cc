@@ -275,11 +275,17 @@ void Entry::activate_cb(GtkWidget *widget, Entry *entry)
 		entry->m_handler->activated(entry);
 }
 
-IoWatch::IoWatch(int fd) :
+IoWatch::IoWatch(int fd, IoDirection dir) :
 	m_handler(NULL)
 {
 	m_iochannel = g_io_channel_unix_new(fd);
-	m_id = g_io_add_watch(m_iochannel, G_IO_IN, GIOFunc(io_watch_cb), this);
+	int cond = 0;
+	if (dir & IN)
+		cond |= G_IO_IN;
+	if (dir & OUT)
+		cond |= G_IO_OUT;
+	m_id = g_io_add_watch(m_iochannel, GIOCondition(cond),
+			      GIOFunc(io_watch_cb), this);
 }
 
 IoWatch::~IoWatch()
@@ -291,10 +297,14 @@ IoWatch::~IoWatch()
 bool IoWatch::io_watch_cb(GIOChannel *iochannel, GIOCondition cond,
 			  IoWatch *iowatch)
 {
-	UNUSED(cond);
+	int dir = 0;
+	if (cond & G_IO_IN)
+		dir |= IN;
+	if (cond & G_IO_OUT)
+		dir |= OUT;
 	UNUSED(iochannel);
 	if (iowatch->m_handler)
-		iowatch->m_handler->ready(iowatch);
+		iowatch->m_handler->ready(iowatch, IoDirection(dir));
 	return true;
 }
 

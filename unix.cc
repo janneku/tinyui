@@ -26,7 +26,7 @@ SigIntHandler::SigIntHandler() :
 	sigaction(SIGTERM, &term, 0);
 	sigaction(SIGHUP, &term, 0);
 
-	IoWatch *watch = new IoWatch(m_fd[1]);
+	IoWatch *watch = new IoWatch(m_fd[1], IN);
 	watch->set_handler(this);
 }
 
@@ -35,9 +35,10 @@ void SigIntHandler::set_handler(QuitInterface *handler)
 	m_handler = handler;
 }
 
-void SigIntHandler::ready(IoWatch *iowatch)
+void SigIntHandler::ready(IoWatch *iowatch, IoDirection dir)
 {
 	UNUSED(iowatch);
+	UNUSED(dir);
 	char a;
 	ssize_t ret = read(m_fd[1], &a, 1);
 	UNUSED(ret);

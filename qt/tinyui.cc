@@ -187,22 +187,37 @@ void Entry::returnPressed_slot()
 		m_handler->activated(this);
 }
 
-IoWatch::IoWatch(int fd) :
-	m_handler(NULL)
+IoWatch::IoWatch(int fd, IoDirection dir) :
+	m_handler(NULL), m_rd_notifier(NULL), m_wr_notifier(NULL)
 {
-	m_notifier = new QSocketNotifier(fd, QSocketNotifier::Read);
-	connect(m_notifier, SIGNAL(activated(int)), SLOT(activated_slot()));
+	if (dir & IN) {
+		m_rd_notifier = new QSocketNotifier(fd, QSocketNotifier::Read);
+		connect(m_rd_notifier, SIGNAL(activated(int)),
+			SLOT(rd_activated_slot()));
+	}
+	if (dir & OUT) {
+		m_wr_notifier = new QSocketNotifier(fd, QSocketNotifier::Write);
+		connect(m_wr_notifier, SIGNAL(activated(int)),
+			SLOT(wr_activated_slot()));
+	}
 }
 
 IoWatch::~IoWatch()
 {
-	delete m_notifier;
+	delete m_rd_notifier;
+	delete m_wr_notifier;
 }
 
-void IoWatch::activated_slot()
+void IoWatch::rd_activated_slot()
 {
 	if (m_handler)
-		m_handler->ready(this);
+		m_handler->ready(this, IN);
+}
+
+void IoWatch::wr_activated_slot()
+{
+	if (m_handler)
+		m_handler->ready(this, OUT);
 }
 
 Timer::Timer(int interval) :

@@ -10,7 +10,7 @@ public:
 		Window(L"Hello world \x3A9"),
 		m_mainbox(tinyui::VERTICAL),
 		m_quitbutton(L"Quit"),
-		m_watch(0),
+		m_watch(0, tinyui::IN),
 		m_timer(1000),
 		m_entry(L"Please write here")
 	{
@@ -48,9 +48,10 @@ private:
 		if (button == &m_quitbutton)
 			tinyui::Application::instance()->quit();
 	}
-	void ready(tinyui::IoWatch *watch)
+	void ready(tinyui::IoWatch *watch, tinyui::IoDirection dir)
 	{
 		UNUSED(watch);
+		UNUSED(dir);
 		char buf[256];
 		ssize_t len = read(0, buf, sizeof(buf) - 1);
 		if (len == 0)

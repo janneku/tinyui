@@ -72,6 +72,12 @@ enum Orientation {
 	HORIZONTAL,
 };
 
+/* bitfield */
+enum IoDirection {
+	IN = 1,
+	OUT = 2,
+};
+
 class Widget {
 public:
 	Widget() {}
@@ -263,7 +269,7 @@ class IoWatch;
 
 class IoWatchEvents {
 public:
-	virtual void ready(IoWatch *iowatch) = 0;
+	virtual void ready(IoWatch *iowatch, IoDirection dir) = 0;
 };
 
 class IoWatch: public QObject {
@@ -271,7 +277,7 @@ class IoWatch: public QObject {
 	Q_OBJECT
 
 public:
-	explicit IoWatch(int fd);
+	explicit IoWatch(int fd, IoDirection dir);
 	~IoWatch();
 
 	void set_handler(IoWatchEvents *handler);
@@ -286,9 +292,11 @@ private:
 				IoWatch *iowatch);
 #endif
 #ifdef TINYUI_QT
-	QSocketNotifier *m_notifier;
+	QSocketNotifier *m_rd_notifier;
+	QSocketNotifier *m_wr_notifier;
 private slots:
-	void activated_slot();
+	void rd_activated_slot();
+	void wr_activated_slot();
 #endif
 };
 
@@ -335,7 +343,7 @@ private:
 	QuitInterface *m_handler;
 	int m_fd[2];
 
-	void ready(IoWatch *iowatch);
+	void ready(IoWatch *iowatch, IoDirection dir);
 
 	static SigIntHandler *m_instance;
 	static void signal_handler(int sig);
